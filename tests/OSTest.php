@@ -52,8 +52,6 @@ class OSTest extends \PHPUnit_Framework_TestCase
 	public function testProcessList()
 	{
 		$processes = OS::os()->processes();
-		$this->assertEquals(count($processes), OS::os()->countProcesses());
-
 		$this->assertTrue(is_array($processes));
 		$this->assertGreaterThan(0, count($processes));
 	}
