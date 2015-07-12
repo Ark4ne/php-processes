@@ -76,6 +76,6 @@ class OSTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(2, count($processes));
 		$this->assertEquals(count($processes), OS::os()->countProcesses('php'));
 
-		sleep(1);
+		sleep(3);
 	}
 }

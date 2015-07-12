@@ -36,7 +36,7 @@ class ProcessTest extends PHPUnit_Framework_TestCase
 			$this->assertEquals('php', $processes[0]->getProgram());
 		}
 
-		sleep(1);
+		sleep(3);
 	}
 
 	public function testKill()
@@ -55,6 +55,6 @@ class ProcessTest extends PHPUnit_Framework_TestCase
 		$processes = \Ark4ne\Process\System\System::processes('php');
 		$this->assertEquals(0, count($processes));
 
-		sleep(1);
+		sleep(3);
 	}
 }
