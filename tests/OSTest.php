@@ -66,15 +66,14 @@ class OSTest extends \PHPUnit_Framework_TestCase
 		$processes = OS::os()->processes('php');
 
 		$this->assertTrue(is_array($processes));
-		$this->assertEquals([], $processes);
-		$this->assertEquals(0, count($processes));
+		$this->assertEquals(1, count($processes));
 		$this->assertEquals(count($processes), OS::os()->countProcesses('php'));
 
 		$cmd->exec(true);
 		$processes = OS::os()->processes('php');
 
 		$this->assertTrue(is_array($processes));
-		$this->assertEquals(1, count($processes));
+		$this->assertEquals(2, count($processes));
 		$this->assertEquals(count($processes), OS::os()->countProcesses('php'));
 
 		sleep(1);
