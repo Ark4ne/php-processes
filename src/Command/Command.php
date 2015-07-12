@@ -8,16 +8,22 @@ class Command
 {
 
 	/**
+	 * Program to execute.
+	 *
 	 * @var string $program
 	 */
 	private $program;
 
 	/**
+	 * Arguments to add at execution.
+	 *
 	 * @var array $arguments
 	 */
 	private $arguments;
 
 	/**
+	 * Options to add at execution.
+	 *
 	 * @var array $options
 	 */
 	private $options;
