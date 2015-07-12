@@ -55,7 +55,8 @@ class OSWindows implements OSInterface
 		$tasks = [];
 
 		if ($filter) {
-			$filter = 'where "CommandLine like \'' . $filter . '%\'"';
+			$filter = 'where "Caption like \'' . explode(' ',
+														 $filter)[0] . '.exe\' AND CommandLine like \'%' . $filter . '%\'"';
 		}
 
 		exec('wmic process ' . $filter . ' get caption,commandline,processid /FORMAT:CSV 2>NUL', $tasks);

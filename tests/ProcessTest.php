@@ -24,11 +24,11 @@ class ProcessTest extends PHPUnit_Framework_TestCase
 
 		$processes = \Ark4ne\Process\System\System::processes('php');
 
-		$this->assertEquals(1, count($processes));
+		$this->assertEquals(2, count($processes));
 		$this->assertInstanceOf('\Ark4ne\Process\Process', $processes[0]);
 
-		$this->assertEquals('pid:' . $processes[0]->getPid() . ' - program:php' . (\Ark4ne\Process\System\OS::isWin() ? '.exe' : '') . ' - command:php  ' . __DIR__ . '/command/basic.php ',
-							(string)$processes[0]);
+		$this->assertContains('program:php' . (\Ark4ne\Process\System\OS::isWin() ? '.exe' : ''),
+							  (string)$processes[0]);
 		if (\Ark4ne\Process\System\OS::isWin()) {
 			$this->assertEquals('php.exe', $processes[0]->getProgram());
 		}
@@ -47,13 +47,13 @@ class ProcessTest extends PHPUnit_Framework_TestCase
 
 		$processes = \Ark4ne\Process\System\System::processes('php');
 
-		$this->assertEquals(1, count($processes));
+		$this->assertEquals(2, count($processes));
 		$this->assertInstanceOf('\Ark4ne\Process\Process', $processes[0]);
 
-		$processes[0]->kill();
+		$processes[1]->kill();
 
 		$processes = \Ark4ne\Process\System\System::processes('php');
-		$this->assertEquals(0, count($processes));
+		$this->assertEquals(1, count($processes));
 
 		sleep(3);
 	}
