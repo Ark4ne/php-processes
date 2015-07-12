@@ -60,6 +60,7 @@ class OSTest extends \PHPUnit_Framework_TestCase
 	{
 		$processes = OS::os()->processes('php');
 		$this->assertTrue(is_array($processes));
+
 		$this->assertEquals(1, count($processes));
 	}
 

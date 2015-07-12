@@ -27,13 +27,13 @@ class ProcessTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(2, count($processes));
 		$this->assertInstanceOf('\Ark4ne\Process\Process', $processes[0]);
 
-		$this->assertContains('program:php' . (\Ark4ne\Process\System\OS::isWin() ? '.exe' : ''),
+		$this->assertContains('program:',
 							  (string)$processes[0]);
 		if (\Ark4ne\Process\System\OS::isWin()) {
-			$this->assertEquals('php.exe', $processes[0]->getProgram());
+			$this->assertContains('php.exe', $processes[0]->getProgram());
 		}
 		else {
-			$this->assertEquals('php', $processes[0]->getProgram());
+			$this->assertContains('php', $processes[0]->getProgram());
 		}
 
 		$processes[1]->kill();

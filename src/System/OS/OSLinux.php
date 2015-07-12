@@ -64,7 +64,7 @@ class OSLinux implements OSInterface
 
 		$processes = [];
 		foreach ($tasks as $task) {
-			$task    = explode(" ", $task);
+			$task    = explode(" ", trim($task));
 			$command = '';
 			for ($i = 2, $length = count($task); $i < $length; $i++) {
 				$command .= $task[$i];
@@ -72,7 +72,7 @@ class OSLinux implements OSInterface
 			$processes[] = new Process($task[0], $task[1], $command);
 		}
 
-		return $tasks;
+		return $processes;
 	}
 
 	/**
