@@ -75,12 +75,13 @@ class OSTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue(is_array($processes));
 		$this->assertEquals(1, count($processes));
 		$this->assertEquals(count($processes), OS::os()->countProcesses('php'));
+
 	}
 
 	public function testProcessBackground()
 	{
 
-		$cmd = new Ark4ne\Process\Command\Command('php', __DIR__ . '/command/no-end.php');
+		$cmd = new Ark4ne\Process\Command\Command('php', __DIR__ . '/command/basic.php');
 
 		$cmd->exec(true);
 
@@ -90,7 +91,7 @@ class OSTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(2, count($processes));
 
 		$processes[1]->kill();
-		
+
 		sleep(3);
 	}
 }

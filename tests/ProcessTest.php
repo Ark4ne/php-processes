@@ -36,6 +36,8 @@ class ProcessTest extends PHPUnit_Framework_TestCase
 			$this->assertEquals('php', $processes[0]->getProgram());
 		}
 
+		$processes[1]->kill();
+
 		sleep(3);
 	}
 
