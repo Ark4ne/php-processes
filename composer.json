@@ -1,5 +1,5 @@
 {
-  "name": "akr4ne/php-process",
+  "name": "ark4ne/php-processes",
   "description": "A Manager of multithreading queue processing for laravel.",
   "keywords": [
     "php",
