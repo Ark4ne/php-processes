@@ -55,10 +55,10 @@ class OSLinux implements OSInterface
 	{
 		$tasks = [];
 		if ($filter) {
-			$cmd = "ps -xao pid,args | grep -v grep | grep '{$filter}'";
+			$cmd = "ps xao pid,args | grep -v grep | grep '{$filter}'";
 		}
 		else {
-			$cmd = "ps -xao pid,args";
+			$cmd = "ps xao pid,args";
 		}
 		exec($cmd, $tasks);
 
@@ -83,10 +83,10 @@ class OSLinux implements OSInterface
 	public function countProcesses($filter = null)
 	{
 		if ($filter) {
-			$cmd = "ps -xao pid,args | grep -v grep | grep '{$filter}' | wc -l";
+			$cmd = "ps xao pid,args | grep -v grep | grep '{$filter}' | wc -l";
 		}
 		else {
-			$cmd = "ps -xao pid,args | wc -l";
+			$cmd = "ps xao pid,args | wc -l";
 		}
 
 		return intval(exec($cmd));
