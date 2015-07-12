@@ -24,7 +24,7 @@ class OSLinux implements OSInterface
 	public function execute(Command $command, $background = false)
 	{
 		if ($cmd = $command->getCommandLine()) {
-			return exec($cmd . ($background ? ' & 2>/dev/null' : ''));
+			return exec($cmd . ($background ? '  > /dev/null 2>&1 &' : ''));
 		}
 
 		return null;
