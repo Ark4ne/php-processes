@@ -90,6 +90,9 @@ class OSTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue(is_array($processes));
 		$this->assertEquals(2, count($processes));
 
+		$this->assertInstanceOf('\Ark4ne\Process\Process', $processes[0]);
+		$this->assertInstanceOf('\Ark4ne\Process\Process', $processes[1]);
+
 		$processes[1]->kill();
 
 		sleep(3);
