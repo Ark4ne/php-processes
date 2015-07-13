@@ -1,6 +1,7 @@
 <?php
 
 use Ark4ne\Process\System\OS;
+use Ark4ne\Process\System\System;
 
 class OSTest extends \PHPUnit_Framework_TestCase
 {
@@ -51,14 +52,14 @@ class OSTest extends \PHPUnit_Framework_TestCase
 
 	public function testProcessList()
 	{
-		$processes = OS::os()->processes();
+		$processes = System::processes();
 		$this->assertTrue(is_array($processes));
 		$this->assertGreaterThan(0, count($processes));
 	}
 
 	public function testProcessFilter()
 	{
-		$processes = OS::os()->processes('php');
+		$processes = System::processes('php');
 		$this->assertTrue(is_array($processes));
 
 		$this->assertEquals(1, count($processes));
@@ -71,12 +72,11 @@ class OSTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('php ' . __DIR__ . '/command/basic.php ', $cmd->getCommandLine());
 		$this->assertEquals('basic.end', $cmd->exec());
 
-		$processes = OS::os()->processes('php');
+		$processes = System::processes('php');
 
 		$this->assertTrue(is_array($processes));
 		$this->assertEquals(1, count($processes));
-		$this->assertEquals(count($processes), OS::os()->countProcesses('php'));
-
+		$this->assertEquals(count($processes), System::countProcesses('php'));
 	}
 
 	public function testProcessBackground()
@@ -86,15 +86,15 @@ class OSTest extends \PHPUnit_Framework_TestCase
 
 		$cmd->exec(true);
 
-		$processes = OS::os()->processes('php');
+		$processes = System::processes('php');
 		$this->assertEquals(count($processes), OS::os()->countProcesses('php'));
 		$this->assertTrue(is_array($processes));
 		$this->assertEquals(2, count($processes));
 
-		//$this->assertInstanceOf('\Ark4ne\Process\Process', $processes[0]);
-		//$this->assertInstanceOf('\Ark4ne\Process\Process', $processes[1]);
+		$this->assertInstanceOf('\Ark4ne\Process\Process', $processes[0]);
+		$this->assertInstanceOf('\Ark4ne\Process\Process', $processes[1]);
 
-		//$processes[1]->kill();
+		$processes[1]->kill();
 
 		sleep(3);
 	}

@@ -40,10 +40,24 @@ class System
 
 	/**
 	 * Return an Array of processes list in execution.
+	 *
+	 * @param null $filter
+	 *
 	 * @return array
+	 * @throws \Ark4ne\Process\Exception\OSSystemException
 	 */
 	static public function processes($filter = null)
 	{
 		return OS::os()->processes($filter);
+	}
+
+	/**
+	 * @param null|string $filter
+	 *
+	 * @return int
+	 */
+	public function countProcesses($filter = null)
+	{
+		return OS::os()->countProcesses($filter);
 	}
 }
