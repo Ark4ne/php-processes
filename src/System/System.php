@@ -56,7 +56,7 @@ class System
 	 *
 	 * @return int
 	 */
-	public function countProcesses($filter = null)
+	static public function countProcesses($filter = null)
 	{
 		return OS::os()->countProcesses($filter);
 	}
