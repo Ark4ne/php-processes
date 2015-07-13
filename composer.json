@@ -1,9 +1,10 @@
 {
   "name": "ark4ne/php-processes",
-  "description": "A Manager of multithreading queue processing for laravel.",
+  "description": "Multi OS processes management.",
   "keywords": [
     "php",
     "process",
+    "multi os",
     "system"
   ],
   "license": "MIT",
@@ -21,12 +22,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Ark4ne\\Process\\": "src/"
+      "Ark4ne\\Processes\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Ark4ne\\Process\\": "src/"
+      "Ark4ne\\Processes\\": "src/"
     }
   },
   "minimum-stability": "dev",

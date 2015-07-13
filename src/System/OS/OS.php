@@ -1,8 +1,8 @@
 <?php
 
-namespace Ark4ne\Process\System;
+namespace Ark4ne\Processes\System;
 
-use Ark4ne\Process\Exception\OSSystemException;
+use Ark4ne\Processes\Exception\OSUnknownException;
 
 class OS
 {
@@ -59,7 +59,7 @@ class OS
 
 	/**
 	 * @return OSInterface|OSLinux|OSWindows
-	 * @throws OSSystemException
+	 * @throws OSUnknownException
 	 */
 	static public function os()
 	{
@@ -73,7 +73,7 @@ class OS
 					self::$os = new OSWindows();
 					break;
 				default:
-					throw new OSSystemException();
+					throw new OSUnknownException();
 			}
 		}
 

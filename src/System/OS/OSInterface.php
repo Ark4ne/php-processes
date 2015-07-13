@@ -6,20 +6,32 @@
  * Time: 18:47
  */
 
-namespace Ark4ne\Process\System;
+namespace Ark4ne\Processes\System;
 
-use Ark4ne\Process\Command\Command;
-use Ark4ne\Process\Process;
+use Ark4ne\Processes\Command\Command;
+use Ark4ne\Processes\Exception\CommandEmptyException;
+use Ark4ne\Processes\Exception\ProcessNullPIDException;
+use Ark4ne\Processes\Process;
 
 interface OSInterface
 {
 	/**
-	 * Execute the process.
+	 * Escape double Quote for cli.
+	 *
+	 * @param string $string
+	 *
+	 * @return string
+	 */
+	public function escapeQuoteCli($string);
+
+	/**
+	 * Execute the command.
 	 *
 	 * @param Command $command
 	 * @param bool    $background
 	 *
 	 * @return mixed
+	 * @throws CommandEmptyException
 	 */
 	public function execute(Command $command, $background = false);
 
@@ -29,6 +41,7 @@ interface OSInterface
 	 * @param Process $process
 	 *
 	 * @return mixed
+	 * @throws ProcessNullPIDException
 	 */
 	public function kill(Process $process);
 
@@ -37,7 +50,7 @@ interface OSInterface
 	 *
 	 * @param null|string $filter
 	 *
-	 * @return array
+	 * @return Process[]
 	 */
 	public function processes($filter = null);
 

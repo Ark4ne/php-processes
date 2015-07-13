@@ -1,29 +1,27 @@
 <?php
 
-namespace Ark4ne\Process\Command;
+namespace Ark4ne\Processes\Command;
 
-use Ark4ne\Process\System\System;
+use Ark4ne\Processes\System\OS;
+use Ark4ne\Processes\System\System;
 
 class Command
 {
 
 	/**
 	 * Program to execute.
-	 *
 	 * @var string $program
 	 */
 	private $program;
 
 	/**
-	 * Arguments to add at execution.
-	 *
+	 * Arguments to add at the command line.
 	 * @var array $arguments
 	 */
 	private $arguments;
 
 	/**
-	 * Options to add at execution.
-	 *
+	 * Options to add at the command line.
 	 * @var array $options
 	 */
 	private $options;
@@ -52,12 +50,12 @@ class Command
 		$this->setOptions([]);
 		if ($options) {
 			if (is_array($options)) {
-				foreach ($options as $opt) {
-					$this->addOption($opt);
+				foreach ($options as $key => $opt) {
+					$this->addOption($key, $opt);
 				}
 			}
 			else {
-				$this->addOption($options);
+				$this->addOption($options, '');
 			}
 		}
 	}
@@ -119,14 +117,17 @@ class Command
 	}
 
 	/**
+	 * @param string $key
 	 * @param string $option
 	 */
-	public function addOption($option)
+	public function addOption($key, $option)
 	{
-		$this->options[md5($option)] = $option;
+		$this->options[$key] = $option;
 	}
 
 	/**
+	 * Execute the command.
+	 *
 	 * @param bool $background
 	 *
 	 * @return mixed
@@ -141,10 +142,38 @@ class Command
 	 */
 	public function getCommandLine()
 	{
-		$arguments = trim(implode(' ', $this->arguments));
+		$arguments = '';
+		if (count($this->arguments)) {
+			$arguments = ' ' . trim(implode(' ', $this->arguments));
+		}
+		$options = '';
+		if (count($this->options)) {
+			$opts = [];
+			foreach ($this->options as $key => $opt) {
+				switch (true) {
+					case is_null($opt):
+						$opts[] = $key;
+						break;
+					case is_bool($opt):
+						$opts[] = $key . '=' . ($opt ? '1' : '0');
+						break;
+					case is_numeric($opt):
+						$opts[] = $key . '=' . $opt;
+						break;
+					case is_string($opt):
+						$opts[] = $key . '="' . OS::os()->escapeQuoteCli($opt) . '"';
+						break;
+					case $opt instanceof \Serializable;
+						$opts[] = $key . '="' . OS::os()->escapeQuoteCli(serialize($opt)) . '"';
+						break;
+					default:
+						$opts[] = $key . '="' . OS::os()->escapeQuoteCli(json_encode($opt)) . '"';
+						break;
+				}
+			}
+			$options = ' ' . trim('--' . implode(' --', $opts));
+		}
 
-		$options = trim(implode(' --', $this->options));
-
-		return "{$this->getProgram()} {$arguments} {$options}";
+		return $this->getProgram() ? trim("{$this->getProgram()}{$arguments}{$options}") : null;
 	}
 }

@@ -6,8 +6,8 @@
  * Time: 19:15
  */
 
-namespace Ark4ne\Process\Exception;
+namespace Ark4ne\Processes\Exception;
 
-class OSSystemException extends \Exception
+class OSUnknownException extends \Exception
 {
 }

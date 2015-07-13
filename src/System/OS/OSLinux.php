@@ -6,20 +6,35 @@
  * Time: 19:02
  */
 
-namespace Ark4ne\Process\System;
+namespace Ark4ne\Processes\System;
 
-use Ark4ne\Process\Command\Command;
-use Ark4ne\Process\Process;
+use Ark4ne\Processes\Command\Command;
+use Ark4ne\Processes\Exception\CommandEmptyException;
+use Ark4ne\Processes\Exception\ProcessNullPIDException;
+use Ark4ne\Processes\Process;
 
 class OSLinux implements OSInterface
 {
 	/**
-	 * Execute the process.
+	 * Escape double Quote for cli.
+	 *
+	 * @param string $string
+	 *
+	 * @return string
+	 */
+	public function escapeQuoteCli($string)
+	{
+		return str_replace('"', '\\"', $string);
+	}
+
+	/**
+	 * Execute the command.
 	 *
 	 * @param Command $command
 	 * @param bool    $background
 	 *
 	 * @return null|string
+	 * @throws CommandEmptyException
 	 */
 	public function execute(Command $command, $background = false)
 	{
@@ -27,7 +42,7 @@ class OSLinux implements OSInterface
 			return exec($cmd . ($background ? '  > /dev/null 2>&1 &' : ''));
 		}
 
-		return null;
+		throw new CommandEmptyException;
 	}
 
 	/**
@@ -36,12 +51,14 @@ class OSLinux implements OSInterface
 	 * @param Process $process
 	 *
 	 * @return mixed
+	 * @throws ProcessNullPIDException
 	 */
 	public function kill(Process $process)
 	{
-		if ($process->getPid()) {
-			exec("kill -9 {$process->getPid()}");
+		if ($process && $process->getPid()) {
+			return exec("kill -9 {$process->getPid()}");
 		}
+		throw new ProcessNullPIDException;
 	}
 
 	/**
@@ -49,7 +66,7 @@ class OSLinux implements OSInterface
 	 *
 	 * @param null|string $filter
 	 *
-	 * @return array
+	 * @return Process[]
 	 */
 	public function processes($filter = null)
 	{

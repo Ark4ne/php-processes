@@ -1,19 +1,34 @@
 <?php
 
-namespace Ark4ne\Process\System;
+namespace Ark4ne\Processes\System;
 
-use Ark4ne\Process\Command\Command;
-use Ark4ne\Process\Process;
+use Ark4ne\Processes\Command\Command;
+use Ark4ne\Processes\Exception\CommandEmptyException;
+use Ark4ne\Processes\Exception\ProcessNullPIDException;
+use Ark4ne\Processes\Process;
 
 class OSWindows implements OSInterface
 {
 	/**
-	 * Execute the process.
+	 * Escape double Quote for cli.
+	 *
+	 * @param string $string
+	 *
+	 * @return string
+	 */
+	public function escapeQuoteCli($string)
+	{
+		return str_replace('"', '""', $string);
+	}
+
+	/**
+	 * Execute the command.
 	 *
 	 * @param Command $command
 	 * @param bool    $background
 	 *
 	 * @return null|string
+	 * @throws CommandEmptyException
 	 */
 	public function execute(Command $command, $background = false)
 	{
@@ -24,9 +39,11 @@ class OSWindows implements OSInterface
 			else {
 				return exec($cmd);
 			}
+
+			return null;
 		}
 
-		return null;
+		throw new CommandEmptyException;
 	}
 
 	/**
@@ -34,13 +51,15 @@ class OSWindows implements OSInterface
 	 *
 	 * @param Process $process
 	 *
-	 * @return mixed
+	 * @return string
+	 * @throws ProcessNullPIDException
 	 */
 	public function kill(Process $process)
 	{
-		if ($process->getPid()) {
-			exec("taskkill /F /PID {$process->getPid()}");
+		if ($process && $process->getPid()) {
+			return exec("taskkill /F /PID {$process->getPid()}");
 		}
+		throw new ProcessNullPIDException;
 	}
 
 	/**
@@ -48,7 +67,7 @@ class OSWindows implements OSInterface
 	 *
 	 * @param null|string $filter
 	 *
-	 * @return array
+	 * @return Process[]
 	 */
 	public function processes($filter = null)
 	{
@@ -79,10 +98,12 @@ class OSWindows implements OSInterface
 				continue;
 			}
 			if (strlen($task) > 1) {
-				$task        = explode(",", $task);
-				$processes[] = new Process($task[$options['ProcessId']],
-										   $task[$options['Caption']],
-										   $task[$options['CommandLine']]);
+				$task = explode(",", $task);
+				if ($task[$options['ProcessId']]) {
+					$processes[] = new Process($task[$options['ProcessId']],
+											   $task[$options['Caption']],
+											   $task[$options['CommandLine']]);
+				}
 			}
 		}
 

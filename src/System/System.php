@@ -1,25 +1,22 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Guillaume
- * Date: 12/07/2015
- * Time: 18:50
- */
 
-namespace Ark4ne\Process\System;
+namespace Ark4ne\Processes\System;
 
-use Ark4ne\Process\Command\Command;
-use Ark4ne\Process\Process;
+use Ark4ne\Processes\Command\Command;
+use Ark4ne\Processes\Exception\CommandEmptyException;
+use Ark4ne\Processes\Exception\ProcessNullPIDException;
+use Ark4ne\Processes\Process;
 
 class System
 {
 	/**
-	 * Execute the process.
+	 * Execute the command.
 	 *
 	 * @param Command $command
 	 * @param bool    $background
 	 *
 	 * @return mixed
+	 * @throws CommandEmptyException
 	 */
 	static public function execute(Command $command, $background = false)
 	{
@@ -32,6 +29,7 @@ class System
 	 * @param Process $process
 	 *
 	 * @return mixed
+	 * @throws ProcessNullPIDException
 	 */
 	static public function kill(Process $process)
 	{
@@ -43,8 +41,8 @@ class System
 	 *
 	 * @param null $filter
 	 *
-	 * @return array
-	 * @throws \Ark4ne\Process\Exception\OSSystemException
+	 * @return Process[]
+	 * @throws \Ark4ne\Processes\Exception\OSUnknownException
 	 */
 	static public function processes($filter = null)
 	{

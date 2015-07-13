@@ -6,9 +6,10 @@
  * Time: 18:27
  */
 
-namespace Ark4ne\Process;
+namespace Ark4ne\Processes;
 
-use Ark4ne\Process\System\System;
+use Ark4ne\Processes\Exception\ProcessNullPIDException;
+use Ark4ne\Processes\System\System;
 
 class Process
 {
@@ -80,9 +81,14 @@ class Process
 	 * @param int    $pid
 	 * @param string $program
 	 * @param string $command
+	 *
+	 * @throws ProcessNullPIDException
 	 */
-	public function __construct($pid = 0, $program = "", $command = "")
+	public function __construct($pid, $program = "", $command = "")
 	{
+		if (!$pid) {
+			throw new ProcessNullPIDException;
+		}
 		$this->setPid($pid);
 		$this->setProgram($program);
 		$this->setCommand($command);
@@ -96,6 +102,10 @@ class Process
 		return "pid:{$this->getPid()} - program:{$this->getProgram()} - command:{$this->getCommand()}";
 	}
 
+	/**
+	 * Kill the process.
+	 * @return mixed
+	 */
 	public function kill()
 	{
 		System::kill($this);

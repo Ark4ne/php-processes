@@ -1,7 +1,10 @@
 <?php
 
-use Ark4ne\Process\System\OS;
-use Ark4ne\Process\System\System;
+use Ark4ne\Processes\Command\Command;
+use Ark4ne\Processes\System\OS;
+use Ark4ne\Processes\System\OSLinux;
+use Ark4ne\Processes\System\OSWindows;
+use Ark4ne\Processes\System\System;
 
 class OSTest extends \PHPUnit_Framework_TestCase
 {
@@ -35,13 +38,13 @@ class OSTest extends \PHPUnit_Framework_TestCase
 	{
 		switch (true) {
 			case stristr(PHP_OS, 'DAR'):
-				$this->assertTrue(OS::os() instanceof \Ark4ne\Process\System\OSLinux);
+				$this->assertTrue(OS::os() instanceof OSLinux);
 				break;
 			case stristr(PHP_OS, 'WIN'):
-				$this->assertTrue(OS::os() instanceof \Ark4ne\Process\System\OSWindows);
+				$this->assertTrue(OS::os() instanceof OSWindows);
 				break;
 			case stristr(PHP_OS, 'LINUX'):
-				$this->assertTrue(OS::os() instanceof \Ark4ne\Process\System\OSLinux);
+				$this->assertTrue(OS::os() instanceof OSLinux);
 				break;
 			default :
 				$this->setExpectedException('Ark4ne\Process\Exception\OSSystemException');
@@ -53,6 +56,7 @@ class OSTest extends \PHPUnit_Framework_TestCase
 	public function testProcessList()
 	{
 		$processes = System::processes();
+		$this->assertGreaterThanOrEqual(count($processes), System::countProcesses());
 		$this->assertTrue(is_array($processes));
 		$this->assertGreaterThan(0, count($processes));
 	}
@@ -67,9 +71,9 @@ class OSTest extends \PHPUnit_Framework_TestCase
 
 	public function testProcess()
 	{
-		$cmd = new Ark4ne\Process\Command\Command('php', __DIR__ . '/command/basic.php');
+		$cmd = new Command('php', __DIR__ . '/command/basic.php');
 
-		$this->assertEquals('php ' . __DIR__ . '/command/basic.php ', $cmd->getCommandLine());
+		$this->assertEquals('php ' . __DIR__ . '/command/basic.php', $cmd->getCommandLine());
 		$this->assertEquals('basic.end', $cmd->exec());
 
 		$processes = System::processes('php');
@@ -82,7 +86,9 @@ class OSTest extends \PHPUnit_Framework_TestCase
 	public function testProcessBackground()
 	{
 
-		$cmd = new Ark4ne\Process\Command\Command('php', __DIR__ . '/command/basic.php');
+		$cmd = new Command('php', __DIR__ . '/command/basic.php');
+
+		$this->assertEquals('php ' . __DIR__ . '/command/basic.php', $cmd->getCommandLine());
 
 		$cmd->exec(true);
 
@@ -91,8 +97,8 @@ class OSTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue(is_array($processes));
 		$this->assertEquals(2, count($processes));
 
-		$this->assertInstanceOf('\Ark4ne\Process\Process', $processes[0]);
-		$this->assertInstanceOf('\Ark4ne\Process\Process', $processes[1]);
+		$this->assertInstanceOf('\Ark4ne\Processes\Process', $processes[0]);
+		$this->assertInstanceOf('\Ark4ne\Processes\Process', $processes[1]);
 
 		$processes[1]->kill();
 
