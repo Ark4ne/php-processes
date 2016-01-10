@@ -9,8 +9,6 @@
 namespace Ark4ne\Processes\System\OS;
 
 use Ark4ne\Processes\Command\Command;
-use Ark4ne\Processes\Exception\CommandEmptyException;
-use Ark4ne\Processes\Exception\ProcessNullPIDException;
 use Ark4ne\Processes\Process\Process;
 
 interface OSInterface
@@ -31,7 +29,6 @@ interface OSInterface
 	 * @param bool    $background
 	 *
 	 * @return mixed
-	 * @throws CommandEmptyException
 	 */
 	public function execute(Command $command, $background = false);
 
@@ -41,7 +38,6 @@ interface OSInterface
 	 * @param Process $process
 	 *
 	 * @return mixed
-	 * @throws ProcessNullPIDException
 	 */
 	public function kill(Process $process);
 
