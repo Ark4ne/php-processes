@@ -6,7 +6,7 @@
  * Time: 18:27
  */
 
-namespace Ark4ne\Processes;
+namespace Ark4ne\Processes\Process;
 
 use Ark4ne\Processes\Exception\ProcessNullPIDException;
 use Ark4ne\Processes\System\System;
@@ -30,6 +30,16 @@ class Process
 	private $command;
 
 	/**
+     * @var string $time
+     */
+    private $time;
+
+    /**
+     * @var string $state
+     */
+    private $state;
+
+    /**
 	 * @return int
 	 */
 	public function getPid()
@@ -78,13 +88,47 @@ class Process
 	}
 
 	/**
-	 * @param int    $pid
+     * @return string
+     */
+    public function getTime()
+    {
+        return $this->time;
+    }
+
+    /**
+     * @param string $time
+     */
+    public function setTime($time)
+    {
+        $this->time = $time;
+    }
+
+    /**
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param string $state
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+
+    /**
+     * @param $pid
 	 * @param string $program
 	 * @param string $command
+     * @param null $state
+     * @param null $time
 	 *
 	 * @throws ProcessNullPIDException
 	 */
-	public function __construct($pid, $program = "", $command = "")
+    public function __construct($pid, $program = "", $command = "", $state = null, $time = null)
 	{
 		if (!$pid) {
 			throw new ProcessNullPIDException;
@@ -92,6 +136,8 @@ class Process
 		$this->setPid($pid);
 		$this->setProgram($program);
 		$this->setCommand($command);
+        $this->setState($state);
+        $this->setTime($time);
 	}
 
 	/**

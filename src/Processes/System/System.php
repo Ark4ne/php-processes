@@ -5,7 +5,8 @@ namespace Ark4ne\Processes\System;
 use Ark4ne\Processes\Command\Command;
 use Ark4ne\Processes\Exception\CommandEmptyException;
 use Ark4ne\Processes\Exception\ProcessNullPIDException;
-use Ark4ne\Processes\Process;
+use Ark4ne\Processes\Process\Process;
+use Ark4ne\Processes\System\OS\Manager;
 
 class System
 {
@@ -20,7 +21,7 @@ class System
 	 */
 	static public function execute(Command $command, $background = false)
 	{
-		return OS::os()->execute($command, $background);
+		return Manager::os()->execute($command, $background);
 	}
 
 	/**
@@ -33,7 +34,7 @@ class System
 	 */
 	static public function kill(Process $process)
 	{
-		return OS::os()->kill($process);
+		return Manager::os()->kill($process);
 	}
 
 	/**
@@ -46,7 +47,7 @@ class System
 	 */
 	static public function processes($filter = null)
 	{
-		return OS::os()->processes($filter);
+		return Manager::os()->processes($filter);
 	}
 
 	/**
@@ -56,6 +57,19 @@ class System
 	 */
 	static public function countProcesses($filter = null)
 	{
-		return OS::os()->countProcesses($filter);
+		return Manager::os()->countProcesses($filter);
+	}
+
+	/**
+	 * Return an Array of processes list in execution.
+	 *
+	 * @param null $id
+	 *
+	 * @return Process[]
+	 * @throws \Ark4ne\Processes\Exception\OSUnknownException
+	 */
+	static public function processById($id)
+	{
+		return Manager::os()->processById($id);
 	}
 }

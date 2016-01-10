@@ -1,8 +1,8 @@
 <?php
 
 use Ark4ne\Processes\Command\Command;
-use Ark4ne\Processes\Process;
-use Ark4ne\Processes\System\OS;
+use Ark4ne\Processes\Process\Process;
+use Ark4ne\Processes\System\OS\Manager;
 use Ark4ne\Processes\System\System;
 
 class ProcessTest extends PHPUnit_Framework_TestCase
@@ -19,20 +19,31 @@ class ProcessTest extends PHPUnit_Framework_TestCase
 	{
 		$cmd = new Command('php', __DIR__ . '/command/basic.php');
 
-		$this->assertEquals(null, $cmd->exec(true));
+		if (\Ark4ne\Processes\System\OS\Manager::isWin()) {
+			$this->assertNull($cmd->exec(true));
+		} else {
+			$process = $cmd->exec(true);
+			$this->assertInstanceOf('\Ark4ne\Processes\Process\Process', $process);
+			$this->assertNotEmpty($process->getState());
+			$this->assertNotEmpty($process->getTime());
+		}
 
 		$processes = System::processes('php');
 
 		$this->assertEquals(2, count($processes));
-		$this->assertInstanceOf('\Ark4ne\Processes\Process', $processes[0]);
+		$this->assertInstanceOf('\Ark4ne\Processes\Process\Process', $processes[0]);
 
 		$this->assertContains('program:',
 							  (string)$processes[0]);
-		if (OS::isWin()) {
+		if (Manager::isWin()) {
 			$this->assertContains('php.exe', $processes[0]->getProgram());
+			$this->assertEmpty($processes[0]->getState());
+			$this->assertEmpty($processes[0]->getTime());
 		}
 		else {
 			$this->assertContains('php', $processes[0]->getProgram());
+			$this->assertNotEmpty($processes[0]->getState());
+			$this->assertNotEmpty($processes[0]->getTime());
 		}
 
 		$processes[1]->kill();
@@ -52,19 +63,23 @@ class ProcessTest extends PHPUnit_Framework_TestCase
 
 		System::kill($process);
 
-		OS::os()->kill($process);
+		Manager::os()->kill($process);
 	}
 
 	public function testKill()
 	{
 		$cmd = new Command('php', __DIR__ . '/command/basic.php');
 
-		$this->assertEquals(null, $cmd->exec(true));
+		if (\Ark4ne\Processes\System\OS\Manager::isWin()) {
+			$this->assertNull($cmd->exec(true));
+		} else {
+			$this->assertInstanceOf('\Ark4ne\Processes\Process\Process', $cmd->exec(true));
+		}
 
 		$processes = System::processes('php');
 
 		$this->assertEquals(2, count($processes));
-		$this->assertInstanceOf('\Ark4ne\Processes\Process', $processes[0]);
+		$this->assertInstanceOf('\Ark4ne\Processes\Process\Process', $processes[0]);
 
 		$processes[1]->kill();
 

@@ -1,9 +1,9 @@
 <?php
 
 use Ark4ne\Processes\Command\Command;
-use Ark4ne\Processes\System\OS;
-use Ark4ne\Processes\System\OSLinux;
-use Ark4ne\Processes\System\OSWindows;
+use \Ark4ne\Processes\System\OS\Manager;
+use Ark4ne\Processes\System\OS\OSLinux;
+use Ark4ne\Processes\System\OS\OSWindows;
 use Ark4ne\Processes\System\System;
 
 class OSTest extends \PHPUnit_Framework_TestCase
@@ -12,24 +12,24 @@ class OSTest extends \PHPUnit_Framework_TestCase
 	{
 		switch (true) {
 			case stristr(PHP_OS, 'DAR'):
-				$this->assertTrue(OS::isOsx());
-				$this->assertFalse(OS::isLinux());
-				$this->assertFalse(OS::isWin());
+				$this->assertTrue(Manager::isOsx());
+				$this->assertFalse(Manager::isLinux());
+				$this->assertFalse(Manager::isWin());
 				break;
 			case stristr(PHP_OS, 'WIN'):
-				$this->assertFalse(OS::isOsx());
-				$this->assertFalse(OS::isLinux());
-				$this->assertTrue(OS::isWin());
+				$this->assertFalse(Manager::isOsx());
+				$this->assertFalse(Manager::isLinux());
+				$this->assertTrue(Manager::isWin());
 				break;
 			case stristr(PHP_OS, 'LINUX'):
-				$this->assertFalse(OS::isOsx());
-				$this->assertTrue(OS::isLinux());
-				$this->assertFalse(OS::isWin());
+				$this->assertFalse(Manager::isOsx());
+				$this->assertTrue(Manager::isLinux());
+				$this->assertFalse(Manager::isWin());
 				break;
 			default :
-				$this->assertFalse(OS::isOsx());
-				$this->assertFalse(OS::isLinux());
-				$this->assertFalse(OS::isWin());
+				$this->assertFalse(Manager::isOsx());
+				$this->assertFalse(Manager::isLinux());
+				$this->assertFalse(Manager::isWin());
 				break;
 		}
 	}
@@ -38,17 +38,17 @@ class OSTest extends \PHPUnit_Framework_TestCase
 	{
 		switch (true) {
 			case stristr(PHP_OS, 'DAR'):
-				$this->assertTrue(OS::os() instanceof OSLinux);
+				$this->assertTrue(Manager::os() instanceof OSLinux);
 				break;
 			case stristr(PHP_OS, 'WIN'):
-				$this->assertTrue(OS::os() instanceof OSWindows);
+				$this->assertTrue(Manager::os() instanceof OSWindows);
 				break;
 			case stristr(PHP_OS, 'LINUX'):
-				$this->assertTrue(OS::os() instanceof OSLinux);
+				$this->assertTrue(Manager::os() instanceof OSLinux);
 				break;
 			default :
 				$this->setExpectedException('Ark4ne\Process\Exception\OSSystemException');
-				OS::os();
+				Manager::os();
 				break;
 		}
 	}
@@ -63,10 +63,10 @@ class OSTest extends \PHPUnit_Framework_TestCase
 
 	public function testProcessFilter()
 	{
-		$processes = System::processes('php');
+		$processes = System::processes('php ');
 		$this->assertTrue(is_array($processes));
 
-		$this->assertEquals(1, count($processes));
+		$this->assertGreaterThanOrEqual(1, count($processes));
 	}
 
 	public function testProcess()
@@ -74,7 +74,10 @@ class OSTest extends \PHPUnit_Framework_TestCase
 		$cmd = new Command('php', __DIR__ . '/command/basic.php');
 
 		$this->assertEquals('php ' . __DIR__ . '/command/basic.php', $cmd->getCommandLine());
-		$this->assertEquals('basic.end', $cmd->exec());
+
+		$exec = $cmd->exec();
+		$this->assertTrue(is_array($exec));
+		$this->assertEquals('basic.end', $exec[0]);
 
 		$processes = System::processes('php');
 
@@ -93,12 +96,12 @@ class OSTest extends \PHPUnit_Framework_TestCase
 		$cmd->exec(true);
 
 		$processes = System::processes('php');
-		$this->assertEquals(count($processes), OS::os()->countProcesses('php'));
+		$this->assertEquals(count($processes), Manager::os()->countProcesses('php'));
 		$this->assertTrue(is_array($processes));
 		$this->assertEquals(2, count($processes));
 
-		$this->assertInstanceOf('\Ark4ne\Processes\Process', $processes[0]);
-		$this->assertInstanceOf('\Ark4ne\Processes\Process', $processes[1]);
+		$this->assertInstanceOf('\Ark4ne\Processes\Process\Process', $processes[0]);
+		$this->assertInstanceOf('\Ark4ne\Processes\Process\Process', $processes[1]);
 
 		$processes[1]->kill();
 

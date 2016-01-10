@@ -1,10 +1,10 @@
 <?php
 
-namespace Ark4ne\Processes\System;
+namespace Ark4ne\Processes\System\OS;
 
 use Ark4ne\Processes\Exception\OSUnknownException;
 
-class OS
+class Manager
 {
 	const OS_UNKNOWN = 1;
 	const OS_WIN = 2;

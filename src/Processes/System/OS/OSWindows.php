@@ -1,11 +1,11 @@
 <?php
 
-namespace Ark4ne\Processes\System;
+namespace Ark4ne\Processes\System\OS;
 
 use Ark4ne\Processes\Command\Command;
 use Ark4ne\Processes\Exception\CommandEmptyException;
 use Ark4ne\Processes\Exception\ProcessNullPIDException;
-use Ark4ne\Processes\Process;
+use Ark4ne\Processes\Process\Process;
 
 class OSWindows implements OSInterface
 {
@@ -34,13 +34,15 @@ class OSWindows implements OSInterface
 	{
 		if ($cmd = $command->getCommandLine()) {
 			if ($background) {
-				pclose(popen("start /B $cmd", "r"));
+				$WshShell = new \COM("WScript.Shell");
+
+				return $WshShell->Run($cmd, 7, false);
 			}
 			else {
-				return exec($cmd);
-			}
+				exec($cmd, $exec);
 
-			return null;
+				return $exec;
+			}
 		}
 
 		throw new CommandEmptyException;
@@ -63,23 +65,12 @@ class OSWindows implements OSInterface
 	}
 
 	/**
-	 * Return an Array of processes list in execution.
+	 * @param $tasks
 	 *
-	 * @param null|string $filter
-	 *
-	 * @return Process[]
+	 * @return array
 	 */
-	public function processes($filter = null)
+	private function formatPSResult($tasks)
 	{
-		$tasks = [];
-
-		if ($filter) {
-			$filter = 'where "Caption like \'' . explode(' ',
-														 $filter)[0] . '.exe\' AND CommandLine like \'%' . $filter . '%\'"';
-		}
-
-		exec('wmic process ' . $filter . ' get caption,commandline,processid /FORMAT:CSV 2>NUL', $tasks);
-
 		array_splice($tasks, 0, 1);
 
 		$processes = [];
@@ -111,6 +102,27 @@ class OSWindows implements OSInterface
 	}
 
 	/**
+	 * Return an Array of processes list in execution.
+	 *
+	 * @param null|string $filter
+	 *
+	 * @return Process[]
+	 */
+	public function processes($filter = null)
+	{
+		$tasks = [];
+
+		if ($filter) {
+			$filter = 'where "Caption like \'' . explode(' ',
+														 $filter)[0] . '.exe\' AND CommandLine like \'%' . $filter . '%\'"';
+		}
+
+		exec('wmic process ' . $filter . ' get caption,commandline,processid /FORMAT:CSV 2>NUL', $tasks);
+
+		return $this->formatPSResult($tasks);
+	}
+
+	/**
 	 * @param null|string $filter
 	 *
 	 * @return int
@@ -118,5 +130,26 @@ class OSWindows implements OSInterface
 	public function countProcesses($filter = null)
 	{
 		return count($this->processes($filter));
+	}
+
+	/**
+	 * @param int $id
+	 *
+	 * @return null|Process
+	 * @throw ProcessNullPIDException
+	 */
+	public function processById($id)
+	{
+		if ($id) {
+			$tasks = [];
+
+			$filter = 'where "Processid like \'' . $id . '\'"';
+
+			exec('wmic process ' . $filter . ' get caption,commandline,processid /FORMAT:CSV 2>NUL', $tasks);
+
+			return $this->formatPSResult($tasks)[0];
+		}
+
+		return null;
 	}
 }

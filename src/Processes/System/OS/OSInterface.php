@@ -6,12 +6,12 @@
  * Time: 18:47
  */
 
-namespace Ark4ne\Processes\System;
+namespace Ark4ne\Processes\System\OS;
 
 use Ark4ne\Processes\Command\Command;
 use Ark4ne\Processes\Exception\CommandEmptyException;
 use Ark4ne\Processes\Exception\ProcessNullPIDException;
-use Ark4ne\Processes\Process;
+use Ark4ne\Processes\Process\Process;
 
 interface OSInterface
 {
@@ -60,4 +60,12 @@ interface OSInterface
 	 * @return int
 	 */
 	public function countProcesses($filter = null);
+
+	/**
+	 * @param int $id
+	 *
+	 * @return null|Process
+	 * @throw ProcessNullPIDException
+	 */
+	public function processById($id);
 }

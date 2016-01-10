@@ -22,12 +22,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Ark4ne\\Processes\\": "src/"
+      "Ark4ne\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Ark4ne\\Processes\\": "src/"
+      "Ark4ne\\": "src/"
     }
   },
   "minimum-stability": "dev",

@@ -90,12 +90,12 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 							],
 							$cmd->getOptions());
 
-		if (\Ark4ne\Processes\System\OS::isWin()) {
-			$this->assertEquals('php --option_null --option_bool=1 --option_int=12 --option_float=12.5 --option_string="opt" --option_array="[""""]"',
+		if (\Ark4ne\Processes\System\OS\Manager::isWin()) {
+			$this->assertEquals('php --option_null --option_bool="1" --option_int="12" --option_float="12.5" --option_string="opt" --option_array="[""""]"',
 								$cmd->getCommandLine());
 		}
 		else {
-			$this->assertEquals('php --option_null --option_bool=1 --option_int=12 --option_float=12.5 --option_string="opt" --option_array="[\\"\\"]"',
+			$this->assertEquals('php --option_null --option_bool="1" --option_int="12" --option_float="12.5" --option_string="opt" --option_array="[\\"\\"]"',
 								$cmd->getCommandLine());
 		}
 	}
@@ -109,7 +109,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(1, count($cmd->getOptions()));
 		$this->assertEquals(['objSerialize' => new ObjectSerializable()], $cmd->getOptions());
 
-		if (\Ark4ne\Processes\System\OS::isWin()) {
+		if (\Ark4ne\Processes\System\OS\Manager::isWin()) {
 			$this->assertEquals('php ' . __DIR__ . '/command/cmdSerialize.php --objSerialize="C:18:""ObjectSerializable"":11:{s:4:""test"";}"',
 								$cmd->getCommandLine());
 		}
@@ -117,8 +117,9 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 			$this->assertEquals('php ' . __DIR__ . '/command/cmdSerialize.php --objSerialize="C:18:\\"ObjectSerializable\\":11:{s:4:\\"test\\";}"',
 								$cmd->getCommandLine());
 		}
-
-		$this->assertEquals('true', $cmd->exec());
+		$exec = $cmd->exec();
+		$this->assertTrue(is_array($exec));
+		$this->assertEquals('true', $exec[0]);
 	}
 
 	public function testOptionsTypeJson()
@@ -130,7 +131,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(1, count($cmd->getOptions()));
 		$this->assertEquals(['objJson' => [1, 2, 3]], $cmd->getOptions());
 
-		if (\Ark4ne\Processes\System\OS::isWin()) {
+		if (\Ark4ne\Processes\System\OS\Manager::isWin()) {
 			$this->assertEquals('php ' . __DIR__ . '/command/cmdJson.php --objJson="[1,2,3]"',
 								$cmd->getCommandLine());
 		}
@@ -138,14 +139,27 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 			$this->assertEquals('php ' . __DIR__ . '/command/cmdJson.php --objJson="[1,2,3]"',
 								$cmd->getCommandLine());
 		}
-
-		$this->assertEquals('true', $cmd->exec());
+		$exec = $cmd->exec();
+		$this->assertTrue(is_array($exec));
+		$this->assertEquals('true', $exec[0]);
 	}
 
 	public function testEmptyException()
 	{
 		$this->setExpectedException('\Ark4ne\Processes\Exception\CommandEmptyException');
-		$cmd = new Command(null);
-		$cmd->exec();
+
+		new Command(null);
+	}
+
+	public function testExecBackground()
+	{
+		if (\Ark4ne\Processes\System\OS\Manager::isLinux()) {
+			$command = new Command('php', __DIR__ . '/command/basic.php');
+			$this->assertInstanceOf('\Ark4ne\Processes\Process\Process', $command->exec(true));
+		}
+		if (\Ark4ne\Processes\System\OS\Manager::isWin()) {
+			$command = new Command('php', __DIR__ . '\command\basic.php');
+			$this->assertNull($command->exec(true));
+		}
 	}
 }
