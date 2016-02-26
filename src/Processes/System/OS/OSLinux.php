@@ -60,7 +60,7 @@ class OSLinux implements OSInterface
     }
 
     /**
-     * @param string[] $tasks
+     * @param array $tasks
      *
      * @return array
      */
@@ -97,7 +97,7 @@ class OSLinux implements OSInterface
      *
      * @param null|string $filter
      *
-     * @return Process[]
+     * @return null|Process[]
      */
     public function processes($filter = null)
     {
@@ -110,7 +110,7 @@ class OSLinux implements OSInterface
         }
         exec($cmd, $tasks);
 
-        return $this->formatPSResult($tasks);
+        return $tasks && count($tasks) ? $this->formatPSResult($tasks) : null;
     }
 
     /**
