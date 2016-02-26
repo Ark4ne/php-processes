@@ -19,6 +19,60 @@ use Ark4ne\Processes\Process\Process;
  */
 class OSLinux implements OSInterface
 {
+
+    /**
+     * @param string     $args
+     * @param array|null $opts
+     * @param array|null $pipes
+     *
+     * @return string
+     */
+    private function getPsCmdLine($args, array $opts = null, array $pipes = null)
+    {
+        $cmd = ['ps'];
+        $cmd[] = $args;
+        if (!empty($opts)) {
+            $cmd[] = '--' . implode(' --', $opts);
+        }
+        if (!empty($pipes)) {
+            $cmd[] = '| ' . implode(' | ', $pipes);
+        }
+
+        return implode(' ', $cmd);
+    }
+
+    /**
+     * @param array $tasks
+     *
+     * @return array
+     */
+    private function formatPSResult($tasks)
+    {
+        $processes = [];
+        $psData = ['user', 'pid', 'cpu', 'mem', 'vsz', 'rss', 'tty', 'status', 'start', 'time', 'program'];
+        foreach ($tasks as $task) {
+            $task = preg_split("/\\s+/", trim($task));
+
+            $processData = (object)[];
+            foreach ($psData as $key => $data) {
+                $processData->$data = $task[$key];
+            }
+            $command = '';
+            for ($i = 11, $length = count($task); $i < $length; $i++) {
+                $command .= ' ' . $task[$i];
+            }
+            $processData->command = trim($command);
+
+            $processes[] = new Process($processData->pid,
+                                       $processData->program,
+                                       $processData->command,
+                                       $processData->status,
+                                       $processData->time);
+        }
+
+        return $processes;
+    }
+
     /**
      * Escape double Quote for cli.
      *
@@ -60,39 +114,6 @@ class OSLinux implements OSInterface
     }
 
     /**
-     * @param array $tasks
-     *
-     * @return array
-     */
-    private function formatPSResult($tasks)
-    {
-
-        $processes = [];
-        $psData = ['user', 'pid', 'cpu', 'mem', 'vsz', 'rss', 'tty', 'status', 'start', 'time', 'program'];
-        foreach ($tasks as $task) {
-            $task = preg_split("/\\s+/", trim($task));
-
-            $processData = (object)[];
-            foreach ($psData as $key => $data) {
-                $processData->$data = $task[$key];
-            }
-            $command = '';
-            for ($i = 11, $length = count($task); $i < $length; $i++) {
-                $command .= ' ' . $task[$i];
-            }
-            $processData->command = trim($command);
-
-            $processes[] = new Process($processData->pid,
-                $processData->program,
-                $processData->command,
-                $processData->status,
-                $processData->time);
-        }
-
-        return $processes;
-    }
-
-    /**
      * Return an Array of processes list in execution.
      *
      * @param null|string $filter
@@ -101,16 +122,15 @@ class OSLinux implements OSInterface
      */
     public function processes($filter = null)
     {
-        $tasks = [];//ps xa | grep -v grep | grep 'php '
-
-        if (!empty($filter)) {//ps xa | grep -v grep | grep 'php ' | awk ' { print $1";", $2";",$3";", $4";", $5";",$6";", $7";", $8";" }'
-            $cmd = "ps xau --no-headers | grep -v grep | grep '{$filter}'";
-        } else {
-            $cmd = "ps xau --no-headers ";
+        $tasks = [];
+        $pipes = null;
+        if (!empty($filter)) {
+            $pipes = ['grep -v grep', "grep '{$filter}'"];
         }
-        exec($cmd, $tasks);
 
-        return $tasks && count($tasks) ? $this->formatPSResult($tasks) : null;
+        exec($this->getPsCmdLine('xau', ['no-headers'], $pipes), $tasks);
+
+        return !empty($tasks) ? $this->formatPSResult($tasks) : null;
     }
 
     /**
@@ -120,13 +140,13 @@ class OSLinux implements OSInterface
      */
     public function countProcesses($filter = null)
     {
+        $pipes = [];
         if (!empty($filter)) {
-            $cmd = "ps xao pid,args | grep -v grep | grep '{$filter}' | wc -l";
-        } else {
-            $cmd = "ps xao pid,args | wc -l";
+            $pipes = ['grep -v grep', "grep '{$filter}'"];
         }
+        $pipes[] = 'wc -l';
 
-        return intval(exec($cmd));
+        return intval(exec($this->getPsCmdLine('xao pid,args', null, $pipes)));
     }
 
     /**
@@ -140,11 +160,9 @@ class OSLinux implements OSInterface
         $tasks = [];
 
         if ($id = intval($id)) {
-            $cmd = "ps xau -p $id --no-headers";
+            exec($this->getPsCmdLine("xau -p $id", ['no-headers']), $tasks);
 
-            exec($cmd, $tasks);
-
-            return $tasks && count($tasks) ? $this->formatPSResult($tasks)[0] : null;
+            return !empty($tasks) ? $this->formatPSResult($tasks)[0] : null;
         }
 
         return null;
