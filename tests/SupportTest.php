@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class SupportStrTest
+ */
 class SupportStrTest extends \PHPUnit_Framework_TestCase
 {
     public function testFromVar()
@@ -17,6 +20,9 @@ class SupportStrTest extends \PHPUnit_Framework_TestCase
     }
 }
 
+/**
+ * Class SupportArrTest
+ */
 class SupportArrTest extends \PHPUnit_Framework_TestCase
 {
     public function testToString()

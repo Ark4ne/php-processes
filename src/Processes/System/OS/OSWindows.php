@@ -5,6 +5,11 @@ namespace Ark4ne\Processes\System\OS;
 use Ark4ne\Processes\Command\Command;
 use Ark4ne\Processes\Process\Process;
 
+/**
+ * Class OSWindows
+ *
+ * @package Ark4ne\Processes\System\OS
+ */
 class OSWindows implements OSInterface
 {
     /**
@@ -23,7 +28,7 @@ class OSWindows implements OSInterface
      * Execute the command.
      *
      * @param Command $command
-     * @param bool $background
+     * @param bool    $background
      *
      * @return null|string
      */
@@ -54,6 +59,37 @@ class OSWindows implements OSInterface
     }
 
     /**
+     * @param null|string $filter
+     *
+     * @return int
+     */
+    public function countProcesses($filter = null)
+    {
+        return count($this->processes($filter));
+    }
+
+    /**
+     * Return an Array of processes list in execution.
+     *
+     * @param null|string $filter
+     *
+     * @return Process[]
+     */
+    public function processes($filter = null)
+    {
+        $tasks = [];
+
+        if ($filter) {
+            $filter = 'where "Caption like \'' . explode(' ',
+                    $filter)[0] . '.exe\' AND CommandLine like \'%' . $filter . '%\'"';
+        }
+
+        exec('wmic process ' . $filter . ' get caption,commandline,processid /FORMAT:CSV 2>NUL', $tasks);
+
+        return $this->formatPSResult($tasks);
+    }
+
+    /**
      * @param $tasks
      *
      * @return array
@@ -81,44 +117,13 @@ class OSWindows implements OSInterface
                 $task = explode(",", $task);
                 if ($task[$options['ProcessId']]) {
                     $processes[] = new Process($task[$options['ProcessId']],
-                                               $task[$options['Caption']],
-                                               $task[$options['CommandLine']]);
+                        $task[$options['Caption']],
+                        $task[$options['CommandLine']]);
                 }
             }
         }
 
         return $processes;
-    }
-
-    /**
-     * Return an Array of processes list in execution.
-     *
-     * @param null|string $filter
-     *
-     * @return Process[]
-     */
-    public function processes($filter = null)
-    {
-        $tasks = [];
-
-        if ($filter) {
-            $filter = 'where "Caption like \'' . explode(' ',
-                                                         $filter)[0] . '.exe\' AND CommandLine like \'%' . $filter . '%\'"';
-        }
-
-        exec('wmic process ' . $filter . ' get caption,commandline,processid /FORMAT:CSV 2>NUL', $tasks);
-
-        return $this->formatPSResult($tasks);
-    }
-
-    /**
-     * @param null|string $filter
-     *
-     * @return int
-     */
-    public function countProcesses($filter = null)
-    {
-        return count($this->processes($filter));
     }
 
     /**

@@ -8,6 +8,11 @@
 
 namespace Ark4ne\Processes\Exception;
 
+/**
+ * Class CommandEmptyException
+ *
+ * @package Ark4ne\Processes\Exception
+ */
 class CommandEmptyException extends \Exception
 {
 }

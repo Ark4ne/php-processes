@@ -8,6 +8,11 @@
 
 namespace Ark4ne\Processes\Exception;
 
+/**
+ * Class ProcessNullPIDException
+ *
+ * @package Ark4ne\Processes\Exception
+ */
 class ProcessNullPIDException extends \Exception
 {
 }

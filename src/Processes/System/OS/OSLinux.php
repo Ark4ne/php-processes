@@ -12,6 +12,11 @@ use Ark4ne\Processes\Command\Command;
 use Ark4ne\Processes\Exception\CommandEmptyException;
 use Ark4ne\Processes\Process\Process;
 
+/**
+ * Class OSLinux
+ *
+ * @package Ark4ne\Processes\System\OS
+ */
 class OSLinux implements OSInterface
 {
     /**
@@ -30,7 +35,7 @@ class OSLinux implements OSInterface
      * Execute the command.
      *
      * @param Command $command
-     * @param bool $background
+     * @param bool    $background
      *
      * @return null|string
      * @throws CommandEmptyException
@@ -54,6 +59,11 @@ class OSLinux implements OSInterface
         return exec("kill -9 {$process->getPid()}");
     }
 
+    /**
+     * @param string[] $tasks
+     *
+     * @return array
+     */
     private function formatPSResult($tasks)
     {
 
@@ -73,10 +83,10 @@ class OSLinux implements OSInterface
             $processData->command = trim($command);
 
             $processes[] = new Process($processData->pid,
-                                       $processData->program,
-                                       $processData->command,
-                                       $processData->status,
-                                       $processData->time);
+                $processData->program,
+                $processData->command,
+                $processData->status,
+                $processData->time);
         }
 
         return $processes;

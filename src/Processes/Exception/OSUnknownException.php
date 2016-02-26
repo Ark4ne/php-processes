@@ -8,6 +8,11 @@
 
 namespace Ark4ne\Processes\Exception;
 
+/**
+ * Class OSUnknownException
+ *
+ * @package Ark4ne\Processes\Exception
+ */
 class OSUnknownException extends \Exception
 {
 }

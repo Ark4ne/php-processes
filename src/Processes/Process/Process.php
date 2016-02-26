@@ -11,25 +11,30 @@ namespace Ark4ne\Processes\Process;
 use Ark4ne\Processes\Exception\ProcessNullPIDException;
 use Ark4ne\Processes\System\System;
 
+/**
+ * Class Process
+ *
+ * @package Ark4ne\Processes\Process
+ */
 class Process
 {
 
-	/**
-	 * @var int $pid
-	 */
-	private $pid;
+    /**
+     * @var int $pid
+     */
+    private $pid;
 
-	/**
-	 * @var string $program
-	 */
-	private $program;
+    /**
+     * @var string $program
+     */
+    private $program;
 
-	/**
-	 * @var string $command
-	 */
-	private $command;
+    /**
+     * @var string $command
+     */
+    private $command;
 
-	/**
+    /**
      * @var string $time
      */
     private $time;
@@ -40,54 +45,27 @@ class Process
     private $state;
 
     /**
-	 * @return int
-	 */
-	public function getPid()
-	{
-		return $this->pid;
-	}
+     * @param        $pid
+     * @param string $program
+     * @param string $command
+     * @param null   $state
+     * @param null   $time
+     *
+     * @throws ProcessNullPIDException
+     */
+    public function __construct($pid, $program = "", $command = "", $state = null, $time = null)
+    {
+        if (!$pid) {
+            throw new ProcessNullPIDException;
+        }
+        $this->setPid($pid);
+        $this->setProgram($program);
+        $this->setCommand($command);
+        $this->setState($state);
+        $this->setTime($time);
+    }
 
-	/**
-	 * @param int $pid
-	 */
-	public function setPid($pid)
-	{
-		$this->pid = $pid;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getProgram()
-	{
-		return $this->program;
-	}
-
-	/**
-	 * @param string $program
-	 */
-	public function setProgram($program)
-	{
-		$this->program = $program;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getCommand()
-	{
-		return $this->command;
-	}
-
-	/**
-	 * @param string $command
-	 */
-	public function setCommand($command)
-	{
-		$this->command = $command;
-	}
-
-	/**
+    /**
      * @return string
      */
     public function getTime()
@@ -120,40 +98,66 @@ class Process
     }
 
     /**
-     * @param $pid
-	 * @param string $program
-	 * @param string $command
-     * @param null $state
-     * @param null $time
-	 *
-	 * @throws ProcessNullPIDException
-	 */
-    public function __construct($pid, $program = "", $command = "", $state = null, $time = null)
-	{
-		if (!$pid) {
-			throw new ProcessNullPIDException;
-		}
-		$this->setPid($pid);
-		$this->setProgram($program);
-		$this->setCommand($command);
-        $this->setState($state);
-        $this->setTime($time);
-	}
+     * @return int
+     */
+    public function getPid()
+    {
+        return $this->pid;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return "pid:{$this->getPid()} - program:{$this->getProgram()} - command:{$this->getCommand()}";
-	}
+    /**
+     * @param int $pid
+     */
+    public function setPid($pid)
+    {
+        $this->pid = $pid;
+    }
 
-	/**
-	 * Kill the process.
-	 * @return mixed
-	 */
-	public function kill()
-	{
-		System::kill($this);
-	}
+    /**
+     * @return string
+     */
+    public function getProgram()
+    {
+        return $this->program;
+    }
+
+    /**
+     * @param string $program
+     */
+    public function setProgram($program)
+    {
+        $this->program = $program;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCommand()
+    {
+        return $this->command;
+    }
+
+    /**
+     * @param string $command
+     */
+    public function setCommand($command)
+    {
+        $this->command = $command;
+    }
+
+    /**
+     * Kill the process.
+     */
+    public function kill()
+    {
+        System::kill($this);
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return "pid:{$this->getPid()} - program:{$this->getProgram()} - command:{$this->getCommand()}";
+    }
 }

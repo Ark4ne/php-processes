@@ -8,6 +8,11 @@
 
 namespace Ark4ne\Support;
 
+/**
+ * Class Str
+ *
+ * @package Ark4ne\Support
+ */
 final class Str
 {
 

@@ -9,29 +9,37 @@ use Ark4ne\Processes\System\System;
 use Ark4ne\Support\Arr;
 use Ark4ne\Support\Str;
 
+/**
+ * Class Command
+ *
+ * @package Ark4ne\Processes\Command
+ */
 class Command
 {
 
     /**
      * Program to execute.
+     *
      * @var string $program
      */
     private $program;
 
     /**
      * Arguments to add at the command line.
+     *
      * @var array $arguments
      */
     private $arguments;
 
     /**
      * Options to add at the command line.
+     *
      * @var array $options
      */
     private $options;
 
     /**
-     * @param $program
+     * @param      $program
      * @param null $arguments
      * @param null $options
      *
@@ -161,11 +169,18 @@ class Command
         return trim($this->getProgram() . (strlen($params) > 0 ? ' ' . $params : ''));
     }
 
+    /**
+     * @return string
+     */
     private function argsToString()
     {
         return Arr::toString($this->arguments, ' ');
     }
 
+    /**
+     * @return string
+     * @throws \Ark4ne\Processes\Exception\OSUnknownException
+     */
     private function optsToString()
     {
         $options = '';
@@ -180,6 +195,7 @@ class Command
             }
             $options = trim('--' . implode(' --', $opts));
         }
+
         return $options;
     }
 }
