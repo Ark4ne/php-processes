@@ -30,7 +30,7 @@ class OSWindows implements OSInterface
      * @param Command $command
      * @param bool    $background
      *
-     * @return null|string
+     * @return null|string|array
      */
     public function execute(Command $command, $background = false)
     {
@@ -79,9 +79,11 @@ class OSWindows implements OSInterface
     {
         $tasks = [];
 
-        if ($filter) {
+        if (!is_null($filter) && !empty($filter)) {
             $filter = 'where "Caption like \'' . explode(' ',
                     $filter)[0] . '.exe\' AND CommandLine like \'%' . $filter . '%\'"';
+        } else {
+            $filter = '';
         }
 
         exec('wmic process ' . $filter . ' get caption,commandline,processid /FORMAT:CSV 2>NUL', $tasks);
