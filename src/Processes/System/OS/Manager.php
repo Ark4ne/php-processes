@@ -41,7 +41,7 @@ class Manager
                 return self::OS_WIN;
             case stristr(PHP_OS, 'LINUX'):
                 return self::OS_LINUX;
-            default :
+            default:
                 return self::OS_UNKNOWN;
         }
     }
@@ -70,11 +70,11 @@ class Manager
     {
         if (self::$os == null) {
             switch (self::getOS()) {
-                case self::OS_OSX :
-                case self::OS_LINUX :
+                case self::OS_OSX:
+                case self::OS_LINUX:
                     self::$os = new OSLinux();
                     break;
-                case self::OS_WIN :
+                case self::OS_WIN:
                     self::$os = new OSWindows();
                     break;
                 default:
