@@ -18,7 +18,7 @@ final class Arr
      *
      * @return string
      */
-    final public static function toString($arr, $separator = ' ', $prefix = '', $suffix = '')
+    public static function toString($arr, $separator = ' ', $prefix = '', $suffix = '')
     {
         $str = '';
         if (is_array($arr) && count($arr)) {
