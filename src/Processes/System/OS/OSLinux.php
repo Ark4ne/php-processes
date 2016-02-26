@@ -103,7 +103,7 @@ class OSLinux implements OSInterface
     {
         $tasks = [];//ps xa | grep -v grep | grep 'php '
 
-        if ($filter) {//ps xa | grep -v grep | grep 'php ' | awk ' { print $1";", $2";",$3";", $4";", $5";",$6";", $7";", $8";" }'
+        if (!empty($filter)) {//ps xa | grep -v grep | grep 'php ' | awk ' { print $1";", $2";",$3";", $4";", $5";",$6";", $7";", $8";" }'
             $cmd = "ps xau --no-headers | grep -v grep | grep '{$filter}'";
         } else {
             $cmd = "ps xau --no-headers ";
@@ -120,7 +120,7 @@ class OSLinux implements OSInterface
      */
     public function countProcesses($filter = null)
     {
-        if ($filter) {
+        if (!empty($filter)) {
             $cmd = "ps xao pid,args | grep -v grep | grep '{$filter}' | wc -l";
         } else {
             $cmd = "ps xao pid,args | wc -l";
