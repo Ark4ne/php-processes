@@ -32,7 +32,7 @@ final class Str
                 return $var;
             case is_string($var):
                 return $var;
-            case $var instanceof \Serializable;
+            case $var instanceof \Serializable:
                 return serialize($var);
             default:
                 return json_encode($var);
