@@ -24,7 +24,7 @@ class Manager
     /**
      * @return bool
      */
-    static public function isWin()
+    public static function isWin()
     {
         return self::getOS() == self::OS_WIN;
     }
@@ -32,7 +32,7 @@ class Manager
     /**
      * @return int
      */
-    static private function getOS()
+    private static function getOS()
     {
         switch (true) {
             case stristr(PHP_OS, 'DAR'):
@@ -49,7 +49,7 @@ class Manager
     /**
      * @return bool
      */
-    static public function isLinux()
+    public static function isLinux()
     {
         return self::getOS() == self::OS_LINUX;
     }
@@ -57,7 +57,7 @@ class Manager
     /**
      * @return bool
      */
-    static public function isOsx()
+    public static function isOsx()
     {
         return self::getOS() == self::OS_OSX;
     }
@@ -66,7 +66,7 @@ class Manager
      * @return OSInterface|OSLinux|OSWindows
      * @throws OSUnknownException
      */
-    static public function os()
+    public static function os()
     {
         if (self::$os == null) {
             switch (self::getOS()) {
