@@ -24,7 +24,7 @@ class System
      * @return mixed
      * @throws CommandEmptyException
      */
-    static public function execute(Command $command, $background = false)
+    public static function execute(Command $command, $background = false)
     {
         return Manager::os()->execute($command, $background);
     }
@@ -37,7 +37,7 @@ class System
      * @return mixed
      * @throws ProcessNullPIDException
      */
-    static public function kill(Process $process)
+    public static function kill(Process $process)
     {
         return Manager::os()->kill($process);
     }
@@ -50,7 +50,7 @@ class System
      * @return Process[]
      * @throws \Ark4ne\Processes\Exception\OSUnknownException
      */
-    static public function processes($filter = null)
+    public static function processes($filter = null)
     {
         return Manager::os()->processes($filter);
     }
@@ -60,7 +60,7 @@ class System
      *
      * @return int
      */
-    static public function countProcesses($filter = null)
+    public static function countProcesses($filter = null)
     {
         return Manager::os()->countProcesses($filter);
     }
@@ -73,7 +73,7 @@ class System
      * @return Process[]
      * @throws \Ark4ne\Processes\Exception\OSUnknownException
      */
-    static public function processById($id)
+    public static function processById($id)
     {
         return Manager::os()->processById($id);
     }
