@@ -21,7 +21,7 @@ final class Str
      *
      * @return string
      */
-    public static final function fromVar($var)
+    final public static function fromVar($var)
     {
         switch (true) {
             case is_null($var):
