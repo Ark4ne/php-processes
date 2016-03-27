@@ -11,17 +11,17 @@ final class Arr
 {
 
     /**
-     * @param        $arr
+     * @param array  $arr
      * @param string $separator
      * @param string $prefix
      * @param string $suffix
      *
      * @return string
      */
-    public static function toString($arr, $separator = ' ', $prefix = '', $suffix = '')
+    public static function toString(array $arr, $separator = ' ', $prefix = '', $suffix = '')
     {
         $str = '';
-        if (is_array($arr) && count($arr)) {
+        if (count($arr) > 0) {
             $str = $prefix . implode($separator, $arr) . $suffix;
         }
 

@@ -193,7 +193,7 @@ class Command
                     $opts[] = $key . '="' . Manager::os()->escapeQuoteCli(Str::fromVar($opt)) . '"';
                 }
             }
-            $options = trim('--' . implode(' --', $opts));
+            $options = trim(Arr::toString($opts, ' --', '--'));
         }
 
         return $options;

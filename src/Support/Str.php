@@ -28,10 +28,11 @@ final class Str
                 return '';
             case is_bool($var):
                 return ($var ? '1' : '0');
-            case is_numeric($var):
-                return $var;
             case is_string($var):
                 return $var;
+            case is_numeric($var):
+            case method_exists($var, '__toString'):
+                return (string)$var;
             case $var instanceof \Serializable:
                 return serialize($var);
             default:
