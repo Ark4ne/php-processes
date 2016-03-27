@@ -107,7 +107,5 @@ class OSTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Ark4ne\Processes\Process\Process', $processes[1]);
 
         $processes[1]->kill();
-
-        sleep(3);
     }
 }

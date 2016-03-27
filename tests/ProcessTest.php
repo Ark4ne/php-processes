@@ -22,7 +22,7 @@ class ProcessTest extends PHPUnit_Framework_TestCase
     {
         $cmd = new Command('php', __DIR__ . '/command/basic.php');
 
-        if (\Ark4ne\Processes\System\OS\Manager::isWin()) {
+        if (Manager::isWin()) {
             $this->assertNull($cmd->exec(true));
         } else {
             $process = $cmd->exec(true);
@@ -36,8 +36,7 @@ class ProcessTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(2, count($processes));
         $this->assertInstanceOf('\Ark4ne\Processes\Process\Process', $processes[0]);
 
-        $this->assertContains('program:',
-            (string)$processes[0]);
+        $this->assertContains('program:', (string)$processes[0]);
         if (Manager::isWin()) {
             $this->assertContains('php.exe', $processes[0]->getProgram());
             $this->assertEmpty($processes[0]->getState());
@@ -49,8 +48,6 @@ class ProcessTest extends PHPUnit_Framework_TestCase
         }
 
         $processes[1]->kill();
-
-        sleep(3);
     }
 
     public function testException()
@@ -87,7 +84,5 @@ class ProcessTest extends PHPUnit_Framework_TestCase
 
         $processes = System::processes('php');
         $this->assertEquals(1, count($processes));
-
-        sleep(3);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-sleep(3);
+sleep(1);
 
 echo 'basic.end';
 
